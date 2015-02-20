@@ -35,6 +35,9 @@ def GeneratePointFromPoint(inputPt,prevVec,distance,angle,threshold):
     newBranch = Branch(inputPt,baseVec,[newPt,headVec],[inputPt,rs.VectorReverse(tailVec)])
     objList.append(newBranch)
     return [newPt,baseVec]
+
+
+
 class Branch():
 
 
@@ -61,34 +64,6 @@ def update():
         objList[i].grow()
 #def generateHair():
     
-def addCurve (inputCrv, distMin, distMax,inflow, arrVolume, gens, maxGen,vecInfluence):
-    #rs.EnableRedraw(False)
-    newgens = gens+1
-    
-    if gens<maxGen:
-        
-        domain = rs.CurveDomain (inputCrv)
-        randP1 = r.uniform(domain[0],domain[1])
-        curvePoint = rs.EvaluateCurve(inputCrv, randP1)
-        
-        if curvePoint != None:
-            
-    #Curve point Tangent Vector
-            strNewCrv = generate(inputCrv,curvePoint,randP1,distMin,distMax,rotAngle,angleThresh,vecInfluence)
-            strNewCrv = collideTest(strNewCrv,arrVolume)
-            lineList.append(strNewCrv)
-            rSd = r.randint(1, 10)
-            if rSd> 1 :
-                vecInf1 = influencer(strNewCrv,lineList,VInfScale)
-                vecInf2 = pathInfluence(strNewCrv,inflow,curvePullDistance)
-                vecInfTotal = vectorAverage([vecInf1,vecInf2])
-                addCurve (strNewCrv, distMin, distMax, inflow, arrVolume, newgens, maxGen, vecInfTotal)
-            if rSd>4:
-                vecInf1 = influencer(strNewCrv,lineList,VInfScale)
-                vecInf2 = pathInfluence(strNewCrv,inflow,curvePullDistance)
-                vecInfTotal = vectorAverage([vecInf1,vecInf2])
-                addCurve (strNewCrv, distMin, distMax, inflow, arrVolume, newgens, maxGen, vecInfTotal)
-    rs.EnableRedraw(True)
 
 def main():
     startCrv = rs.GetObject("select start Curve",4)
@@ -122,7 +97,7 @@ objList = []
 
 
 
-divCount = 30
+divCount = 10
 maxBranch = 10
 dist = 10
 headDist = 8
