@@ -1,8 +1,8 @@
 import rhinoscriptsyntax as rs
 #import myDefinitions as defs
 import random as r
-run=True
-a = []
+
+
 
 def GeneratePointFromCurve(inputCrv,distance,angle,threshold):
     #generates a point off of a curve of a line
@@ -49,16 +49,16 @@ class Branch():
         #self.gen = GEN
         
     def grow(self):
-
-        p1 = rs.PointAdd(self.head[0],self.head[1])
-
+        p1 = self.head[0]
+        p2 = rs.PointAdd(self.head[0],self.head[1])
+        rs.AddLine(p1,p2)
+        p1 = self.tail[0]
         p2 = rs.PointAdd(self.tail[0],self.tail[1])
         rs.AddLine(p1,p2)
 #create the Branching
 def update():
     for i in range (0, len(objList)):
         objList[i].grow()
-
 #def generateHair():
     
 def addCurve (inputCrv, distMin, distMax,inflow, arrVolume, gens, maxGen,vecInfluence):
@@ -95,7 +95,7 @@ def main():
     if startCrv is None:
         print "curve Fail"
         return 
-    copyCrv = rs.CopyObject(startCrv)
+        
     divPts = rs.DivideCurve(startCrv,divCount)
     paramList = []
     for i in range (0,len(divPts)):
@@ -104,34 +104,34 @@ def main():
     divCrv = rs.SplitCurve(startCrv,paramList)
     
     for i in range (0,len(divCrv)):
-        branchPt = GeneratePointFromCurve(divCrv[i],dist,rotAngle,angThreshold)
-        #rs.AddLine(rs.CurveMidPoint(divCrv[i]),branchPt[0])
+        branchPt = GeneratePointFromCurve(divCrv[i],dist,90,20)
+        rs.AddLine(rs.CurveMidPoint(divCrv[i]),branchPt[0])
         
-        treeLoop(0,maxBranch,branchPt,angThreshold)
-        rs.DeleteObject(divCrv[i])
-def treeLoop(currentGen,maxGen,prevPt,angThreshold):
+        treeLoop(0,maxBranch,branchPt)
+            
+def treeLoop(currentGen,maxGen,prevPt):
     if currentGen < maxGen:
-        newPt = GeneratePointFromPoint(prevPt[0],prevPt[1],dist,rotAngle,angThreshold)
-        #rs.AddLine(prevPt[0],newPt[0])
-        treeLoop(currentGen+1,maxGen,newPt,angThreshold)
+        newPt = GeneratePointFromPoint(prevPt[0],prevPt[1],dist,45,10)
+        rs.AddLine(prevPt[0],newPt[0])
+        treeLoop(currentGen+1,maxGen,newPt)
     else:
         return
             
 objList = []
 
-rotAngle = 19
-angThreshold = 5
-divCount = 1
-maxBranch = 12
+
+
+
+divCount = 30
+maxBranch = 10
 dist = 10
-tailDist = 0
-
-headDist = 4
-
-#
+headDist = 8
+tailDist = 3
 
 
-if run:
-    main()
-    update()
 
+
+rs.EnableRedraw(False)
+main()
+update()
+rs.EnableRedraw(True)
